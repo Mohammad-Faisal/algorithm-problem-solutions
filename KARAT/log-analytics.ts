@@ -32,11 +32,6 @@ const logs2 = [
 
 const logs3 = [["300", "user_10", "resource_5"]];
 
-const initialValues = {
-  min: 99999999,
-  max: 0,
-};
-
 const getUserAccessTimes = (logs) => {
   const userAccessTimes: any = {};
 
@@ -62,8 +57,15 @@ const getUserAccessTimes = (logs) => {
     }
   }
 
-  return userAccessTimes;
+  const result = {};
+  Object.keys(userAccessTimes).forEach((key) => {
+    result[key] = [userAccessTimes[key].min, userAccessTimes[key].max];
+  });
+
+  return result;
 };
+
+console.log(getUserAccessTimes(logs1));
 
 const checkIfWindowBreaks = (
   accessTimes: number[],
@@ -95,16 +97,23 @@ const findMaximumAccessInWindow = (accessTimes: number[]) => {
 
   const length = accessTimes.length;
   let maxCount = 0;
+  let maxCountTimes = [];
 
   while (rightIndex < length) {
     if (checkIfWindowBreaks(accessTimes, leftIndex, rightIndex)) {
       leftIndex = bringLeftIndexForward(accessTimes, leftIndex, rightIndex);
     }
-    if (rightIndex - leftIndex + 1 > maxCount)
+    if (rightIndex - leftIndex + 1 > maxCount) {
       maxCount = rightIndex - leftIndex + 1;
+      const newCandidate = [];
+      for (let i = leftIndex; i <= rightIndex; i++) {
+        newCandidate.push(accessTimes[i]);
+      }
+      maxCountTimes = [...newCandidate];
+    }
     rightIndex++;
   }
-  return maxCount;
+  return { maxCount, maxCountTimes };
 };
 
 const getMaiximumAccessItems = (logs: Array<Array<string>>) => {
@@ -119,19 +128,35 @@ const getMaiximumAccessItems = (logs: Array<Array<string>>) => {
 
   let maxCount = 0;
   let maxAccessResource = "";
+  let maxTimes = [];
 
   for (const key of Object.keys(resourcesAccessTimes)) {
     const arrayOfAccessTimes = resourcesAccessTimes[key].sort((a, b) => a - b);
-    const maxAccessCount = findMaximumAccessInWindow(arrayOfAccessTimes);
+    const maxAccessCount =
+      findMaximumAccessInWindow(arrayOfAccessTimes).maxCount;
+    const maxAccessTimes =
+      findMaximumAccessInWindow(arrayOfAccessTimes).maxCountTimes;
 
     if (maxAccessCount > maxCount) {
       maxCount = maxAccessCount;
       maxAccessResource = key;
+      maxTimes = [...maxAccessTimes];
     }
   }
 
-  return { maxAccessResource, maxCount };
+  return { maxAccessResource, maxCount, maxTimes };
 };
+
+const result = getMaiximumAccessItems(logs2);
+
+console.log(
+  "most requested resource is ",
+  result.maxAccessResource,
+  " accessed ",
+  result.maxCount,
+  " times. And access times are ",
+  result.maxTimes
+);
 
 const buildTransitionGraph = (logs: Array<Array<string>>) => {
   const userToResourceMap = {};
