@@ -140,8 +140,6 @@ const sourceCourses = (pre: string[][]) => {
   return finalCoursesArray[index];
 };
 
-// console.log(sourceCourses(prereqsCourses2))
-
 const allCourses1 = [
   ["Logic", "COBOL"],
   ["Data Structures", "Algorithms"],

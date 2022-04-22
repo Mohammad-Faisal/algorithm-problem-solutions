@@ -1,4 +1,24 @@
-the problems are kept in a particular sequence where the name is the url
-So the url will be something like this:
+## Learnings
 
-`https://leetcode.com/problems/remove-duplicates-from-sorted-array/` will have a file named `remove-duplicates-from-sorted-array.ts`
+- Be aware of indexes being floating number
+  Math.floor(number)
+
+- Be careful where you should use set and where you should use array
+
+```
+const et = new Set<string>()
+```
+
+- Remember that visited graphs are not required always for directional graphs without loop for DFS
+
+- Initialize an array with 0 filled in
+
+```
+const vis = new Array(30).fill(0);
+```
+
+- javascript array sort
+
+```
+numbers = arr.sort((a , b) => a-b)
+```
